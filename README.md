@@ -2,36 +2,6 @@
 
 **mcpgen** is a command-line tool that seamlessly generates production-ready Model Context Protocol (MCP) server boilerplate from your OpenAPI specifications, enabling you to easily expose your existing APIs as powerful tools for AI agents.
 
-## mcpgen: Seamlessly Transform OpenAPI APIs into AI Agent Tools
-
-The rise of AI agents and the concept of tool calling have created exciting new possibilities for interaction with software systems. The Model Context Protocol (MCP) is emerging as a standard for defining and interacting with these tools, providing the structured information (schemas, prompts) that large language models (LLMs) need for effective and reliable communication.
-
-However, the vast majority of existing business logic is exposed via traditional REST APIs, typically described using OpenAPI specifications. Connecting these established APIs to the MCP ecosystem presents a significant challenge:
-
-*   **Manual Boilerplate:** Manually writing the necessary Go code for an MCP server – including defining input schemas, crafting response templates (prompts), and setting up handler functions for each API operation – is a tedious, time-consuming, and error-prone process.
-*   **Ineffective Proxying:** Simple proxying of REST APIs via an MCP wrapper provides only a superficial connection. It lacks the detailed, structured information (like rich schemas and specific response contexts derived from OpenAPI) that MCP is designed to convey for optimal AI interaction, leading to ambiguity, poor performance, and frequent retries.
-*   **Maintaining Sync:** Keeping manually written MCP definitions in sync with evolving OpenAPI specifications is difficult and adds maintenance overhead.
-
-**mcpgen solves this problem.**
-
-By reading your existing OpenAPI specification, **mcpgen** automatically generates the necessary Go code to create a compliant and effective MCP server. This includes:
-
-*   **Complete MCP Server Structure:** Boilerplate code to set up your MCP server.
-*   **Tool Definitions:** Generates `mcp.Tool` instances for each of your API operations.
-*   **Input Schemas:** Automatically derives and embeds valid JSON Schemas (compatible with MCP's requirements) for each tool's input parameters, based on your OpenAPI request definitions.
-*   **Response Templates/Prompts:** Generates detailed markdown-based response templates for various status codes and content types defined in your OpenAPI spec, giving LLMs the crucial context they need to understand API responses.
-*   **Handler Skeletons:** Provides ready-to-implement handler functions for each tool call, with placeholders for your core business logic (calling the actual backend API).
-*   **Optional Generated HTTP Client & Types:** Simplifies the implementation within handlers by providing generated Go types and an HTTP client wrapper based on your OpenAPI schemas (enabled with `--includes=httpclient,types`).
-
-**Key Features:**
-
-*   Supports OpenAPI versions **3.1, 3.0, and 2.0**.
-*   Handles complex OpenAPI schema features including arrays, unions (using combinators), recursive types, and validation constraints.
-*   Supports multiple content types defined for requests and responses.
-*   Generates fine-grained constants for all generated schemas and prompts, improving code readability and maintainability.
-*   Produces well-structured and tested Go code, providing a robust foundation for your MCP server.
-
-With **mcpgen**, you can significantly accelerate the process of making your valuable, documented APIs accessible and usable by the next generation of AI agents. Focus on implementing the core integration logic, not on writing repetitive boilerplate.
 
 ## Features
 
