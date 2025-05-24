@@ -213,35 +213,15 @@ When you run `mcpgen --input your_openapi.yaml --output generated-server` (and o
     // logic within this function body to integrate with backend APIs.
     // You can generate types, http client and helpers for parsing request params to facilitate the implementation.
     func ListTodosHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-
     	// IMPORTANT: Replace the following placeholder implementation with your actual logic.
-    	// Use the 'request' parameter to access tool call arguments.
-    	// Make HTTP calls or interact with services as needed.
-    	// Return an *mcp.CallToolResult with the response payload, or an error.
+        // Use the 'request' parameter to access tool call arguments.
+        // Make HTTP calls or interact with services as needed.
+        // Return an *mcp.CallToolResult with the response payload, or an error.
 
-    	// Example placeholder implementation:
-    	// For structured input (JSON), unmarshal request.Input into a Go struct.
-    	// var params struct { ... } // If you generated types, use the generated struct here
-    	// if err := json.Unmarshal(request.Input, &params); err != nil {
-    	//     return nil, fmt.Errorf("failed to unmarshal input: %w", err)
-    	// }
-    	//
-        // // If you generated an http client:
-    	// client := mygeneratedclient.NewClient(...)
-        // resp, err := client.ListTodos(ctx, params)
-        // if err != nil {
-        //    // Handle API errors and map to appropriate MCP error response/template
-        //    return nil, fmt.Errorf("backend API error: %w", err)
-        // }
-    	//
-    	// // Assuming resp is a Go struct matching the expected 200 response
-        // respPayload, err := json.Marshal(resp)
-        // if err != nil {
-        //    return nil, fmt.Errorf("failed to marshal response: %w", err)
-        // }
-    	//
-    	// return &mcp.CallToolResult{Payload: respPayload}, nil // Return the JSON payload
-
+        // Example placeholder implementation:
+        // Extract the parameters from the request and parse them.
+        // Call your backend API or perform the necessary operations using 'params'.
+        // Handle the response and errors accordingly.
     	return nil, fmt.Errorf("ListTodos handler not implemented") // Placeholder until you add your logic
     }
     ```
