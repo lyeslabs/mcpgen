@@ -1,0 +1,474 @@
+openapi: 3.0.3
+info:
+  title: Todo API
+  version: v1.0.0
+  description: |-
+    A simple API for managing Todo items.
+    Allows users to create, read, update, and delete todos.
+  contact:
+    name: API Support
+    url: https://api.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://staging-api.example.com/v1
+    description: Staging server
+  - url: http://localhost:8080/v1
+    description: Local development server
+
+tags:
+  - name: Todos
+    description: Operations related to todo items
+
+paths:
+  /todos:
+    get:
+      tags:
+        - Todos
+      summary: List all todo items
+      description: Retrieves a list of todo items, optionally filtered by status.
+      operationId: listTodos
+      parameters:
+        - name: status
+          in: query
+          description: Filter todos by status (e.g., "pending", "completed")
+          required: false
+          schema:
+            type: string
+            enum: [pending, completed, in-progress]
+        - name: token
+          in: cookie
+          description: Token for authentication
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            default: 20
+        - name: limit
+          in: query
+          description: Maximum number of todos to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            default: 20
+        - name: offset
+          in: query
+          description: Number of todos to skip for pagination
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: A list of todo items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/Todo'
+                    - $ref: '#/components/schemas/NewTodo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Todos
+      summary: Create a new todo item
+      description: Adds a new item to the todo list.
+      operationId: createTodo
+      requestBody:
+        description: Todo item to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                priority:
+                  type: string
+                  enum: [low, medium, high]
+      responses:
+        '201':
+          description: Todo item created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  completed:
+                    type: boolean
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  completed:
+                    type: boolean
+            text/plain:
+              schema:
+                type: string
+                example: "Created"
+          headers:
+            Location:
+              description: URL of the newly created todo item.
+              schema:
+                type: string
+                format: uri
+            X-RateLimit-Remaining:
+              description: The number of requests left for the time window.
+              schema:
+                type: integer
+                minimum: 0
+        '207':
+          description: Multi-status response for batch creation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                    - type: object
+                      properties:
+                        error:
+                          type: string
+        '400':
+          description: Bad request due to invalid input.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                  - type: object
+                    properties:
+                      details:
+                        type: array
+                        items:
+                          type: string
+          headers:
+            X-Error-Code:
+              description: Application-specific error code.
+              schema:
+                type: string
+        '422':
+          description: Unprocessable entity due to validation errors.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      anyOf:
+                        - type: object
+                          properties:
+                            field:
+                              type: string
+                            error:
+                              type: string
+                        - type: string
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  traceId:
+                    type: string
+            text/plain:
+              schema:
+                type: string
+                example: "Internal Server Error"
+  /todos/{todoId}:
+    get:
+      tags:
+        - Todos
+      summary: Get a specific todo item
+      description: Retrieves a single todo item by its ID.
+      operationId: getTodoById
+      parameters:
+        - name: todoId
+          in: path
+          required: true
+          description: ID of the todo item to retrieve.
+          schema:
+            type: string
+            format: uuid # Or integer, depending on your ID type
+      responses:
+        '200':
+          description: The requested todo item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - Todos
+      summary: Update an existing todo item
+      description: Modifies an existing todo item by its ID.
+      operationId: updateTodoById
+      parameters:
+        - name: todoId
+          in: path
+          required: true
+          description: ID of the todo item to update.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Updated todo item data.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTodo'
+      responses:
+        '200':
+          description: Todo item updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Todos
+      summary: Delete a todo item
+      description: Removes a todo item by its ID.
+      operationId: deleteTodoById
+      parameters:
+        - name: todoId
+          in: path
+          required: true
+          description: ID of the todo item to delete.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Todo item deleted successfully. No content.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    Todo:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the todo item.
+          example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        title:
+          type: string
+          description: The main content of the todo item.
+          example: "Buy groceries"
+        status:
+          type: string
+          enum: [pending, in-progress, completed]
+          default: pending
+          description: Current status of the todo item.
+          example: "pending"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the todo item was created.
+          readOnly: true
+          example: "2025-05-09T18:12:54Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the todo item was last updated.
+          readOnly: true
+          example: "2025-05-10T10:00:00Z"
+
+    NewTodo:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: The main content of the todo item.
+          example: "Plan weekend trip"
+        description:
+          type: string
+          nullable: true
+          description: Optional detailed description of the todo item.
+          example: "Research destinations and book accommodation."
+        status:
+          type: string
+          enum: [pending, in-progress, completed]
+          default: pending
+          description: Current status of the todo item.
+          example: "pending"
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+          description: Optional due date for the todo item.
+          example: "2025-06-15"
+    
+    TodosList:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/Todo'
+      description: A list of todo items.
+
+    UpdateTodo:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The main content of the todo item.
+          example: "Finalize weekend trip plans"
+        description:
+          type: string
+          nullable: true
+          description: Optional detailed description of the todo item.
+          example: "Confirm bookings and pack."
+        status:
+          type: string
+          enum: [pending, in-progress, completed]
+          description: Current status of the todo item.
+          example: "in-progress"
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+          description: Optional due date for the todo item.
+          example: "2025-06-14"
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: An application-specific error code.
+        message:
+          type: string
+          description: A human-readable description of the error.
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              issue:
+                type: string
+          description: Optional array of specific field validation errors.
+
+  responses:
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 40401
+            message: "Todo item not found."
+    BadRequest:
+      description: The request was malformed or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 40001
+            message: "Invalid input for query parameter 'limit'."
+    UnprocessableEntity:
+      description: The request was well-formed but contains semantic errors.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 42201
+            message: "Validation failed."
+            details:
+              - field: "title"
+                issue: "Title cannot be empty."
+    InternalServerError:
+      description: An unexpected error occurred on the server.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 50000
+            message: "An internal server error occurred. Please try again later."
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY # Common header name for API keys
+      description: API Key for authentication.
+
+security:
+  - ApiKeyAuth: [] # Applies ApiKeyAuth globally to all operations

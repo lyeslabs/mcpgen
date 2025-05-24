@@ -1,0 +1,24 @@
+package {{ .PackageName }}
+
+import (
+	"github.com/mark3labs/mcp-go/server"
+	"{{.MCPToolsImportPath}}"
+)
+
+// NewMCPServer creates and returns an MCP server with all tools registered
+func NewMCPServer() *server.MCPServer {
+	// Create a new MCP server
+	s := server.NewMCPServer(
+		"MCP Server",
+		"1.0.0",	
+		server.WithToolCapabilities(true),
+		server.WithLogging(),
+	)
+
+	// Register all tools
+	{{- range .Tools }}
+	s.AddTool(mcptools.New{{ .ToolNameOriginal }}MCPTool(), mcptools.{{ .ToolHandlerName }})
+	{{- end }}
+
+	return s
+}

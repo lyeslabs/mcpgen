@@ -1,0 +1,21 @@
+openapi: 3.0.0
+info:
+  title: Test API
+  version: "1.0"
+paths:
+  /hello:
+    get:
+      summary: Hello
+      operationId: helloOp
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+servers:
+  - url: http://localhost
