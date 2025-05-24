@@ -3,7 +3,7 @@
 **mcpgen** is a command-line tool that seamlessly generates production-ready Model Context Protocol (MCP) server boilerplate from your OpenAPI specifications, enabling you to easily expose your existing APIs as powerful tools for AI agents.
 
 
-## Features
+## Key Features
 
 -   **OpenAPI Compatibility:** Reads and processes OpenAPI specifications in YAML or JSON format, supporting versions **3.1, 3.0, and 2.0**.
 -   **Comprehensive MCP Server Generation:** Generates the full Go boilerplate required to set up an MCP server, including server initialization, tool registration, and handler skeletons.
