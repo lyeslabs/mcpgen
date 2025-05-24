@@ -2,7 +2,6 @@ package converter
 
 import (
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -42,7 +41,6 @@ func TestGetOperations_None(t *testing.T) {
 
 func TestConvertOperation_RealData(t *testing.T) {
 	// Load a real OpenAPI spec (use your tested Parser)
-	specPath := filepath.Join("..", "testdata", "simple_openapi.yaml")
 	if _, err := os.Stat(specPath); os.IsNotExist(err) {
 		t.Fatalf("Test setup error: fixture file %s does not exist. Please create it.", specPath)
 	}

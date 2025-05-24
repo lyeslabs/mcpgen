@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+var specPath = filepath.Join("..", "..", "testdata", "simple_openapi.yaml")
+
 func TestNewConverter(t *testing.T) {
 	parser := NewParser(false)
 	c := NewConverter(parser)
@@ -22,7 +24,6 @@ func TestNewConverter(t *testing.T) {
 
 func TestConverter_Convert(t *testing.T) {
 	// Load a real OpenAPI spec
-	specPath := filepath.Join("..", "testdata", "simple_openapi.yaml")
 	if _, err := os.Stat(specPath); os.IsNotExist(err) {
 		t.Fatalf("Test setup error: fixture file %s does not exist. Please create it.", specPath)
 	}

@@ -2,15 +2,14 @@ package converter
 
 import (
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
+
 func getTestSpecPath(t *testing.T) string {
-	specPath := filepath.Join("..", "testdata", "simple_openapi.yaml")
 	if _, err := os.Stat(specPath); os.IsNotExist(err) {
 		t.Fatalf("Test setup error: fixture file %s does not exist. Please create it.", specPath)
 	}
