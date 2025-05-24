@@ -23,21 +23,15 @@ func New{{.ToolNameOriginal}}MCPTool() mcp.Tool {
 // logic within this function body to integrate with backend APIs.
 // You can generate types, http client and helpers for parsing request params to facilitate the implementation.
 func {{.ToolHandlerName}} (ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-
+	
 	// IMPORTANT: Replace the following placeholder implementation with your actual logic.
 	// Use the 'request' parameter to access tool call arguments.
 	// Make HTTP calls or interact with services as needed.
 	// Return an *mcp.CallToolResult with the response payload, or an error.
 
 	// Example placeholder implementation:
-	// For structured input (JSON), unmarshal request.Input into a Go struct.
-	// var params struct { ... }
-	// if err := json.Unmarshal(request.Input, &params); err != nil {
-	//     return nil, fmt.Errorf("failed to unmarshal input: %w", err)
-	// }
-	// Call external service...
-	// Prepare response...
-	// return &mcp.CallToolResult{Payload: []byte(`{...}`)}, nil // Return JSON payload
-
+	// Extract the parameters from the request and parse them.
+	// Call your backend API or perform the necessary operations using 'params'.
+	// Handle the response and errors accordingly.
 	return nil, fmt.Errorf("%s not implemented", "{{.ToolNameOriginal}}")
 }
