@@ -30,7 +30,7 @@ func main() {
 	}
 
 	if *outputDir == "" {
-		fmt.Println("Error: output file is required")
+		fmt.Println("Error: output directory is required")
 		flag.Usage()
 		os.Exit(1)
 	}
