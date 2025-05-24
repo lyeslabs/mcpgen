@@ -1,4 +1,4 @@
-# mcpgen
+# mcpgen: Seamlessly Transform OpenAPI APIs into AI Agent Tools
 
 **mcpgen** is a command-line tool that seamlessly generates production-ready Model Context Protocol (MCP) server boilerplate from your OpenAPI specifications, enabling you to easily expose your existing APIs as powerful tools for AI agents.
 
