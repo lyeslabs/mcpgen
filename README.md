@@ -5,7 +5,7 @@
 
 ## Key Features
 
--   **OpenAPI Compatibility:** Reads and processes OpenAPI specifications in YAML or JSON format, supporting versions **3.1, 3.0**.
+-   **OpenAPI Compatibility:** Reads and processes OpenAPI specifications in YAML or JSON format, supporting versions **3.0**.
 -   **Comprehensive MCP Server Generation:** Generates the full Go boilerplate required to set up an MCP server, including server initialization, tool registration, and handler skeletons.
 -   **Accurate Schema Translation:** Automatically translates OpenAPI schema definitions into the necessary **JSON Schemas** for tool inputs (compatible with MCP) and generates detailed markdown-based **Response Templates (Prompts)** for various status codes and content types, providing rich context for AI models.
 -   **Advanced Schema Support:** Handles complex OpenAPI schema constructs, including:
