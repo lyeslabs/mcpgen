@@ -3,7 +3,6 @@ package converter
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -24,12 +23,24 @@ func NewParser(validation bool) *Parser {
 
 // ParseFile parses an OpenAPI document from a file
 func (p *Parser) ParseFile(filePath string) error {
-	data, err := os.ReadFile(filePath)
+	loader := openapi3.NewLoader()
+
+	// Load directly from file path - this handles streaming internally
+	doc, err := loader.LoadFromFile(filePath)
 	if err != nil {
-		return fmt.Errorf("failed to read OpenAPI file: %w", err)
+		return fmt.Errorf("failed to parse OpenAPI document: %w", err)
 	}
 
-	return p.Parse(data)
+	// Validate if needed
+	if p.ValidateDocument {
+		err = doc.Validate(context.Background())
+		if err != nil {
+			return fmt.Errorf("invalid OpenAPI document: %w", err)
+		}
+	}
+
+	p.doc = doc
+	return nil
 }
 
 // Parse parses an OpenAPI document from bytes
