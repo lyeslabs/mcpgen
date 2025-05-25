@@ -18,6 +18,7 @@ func main() {
 	validation := flag.Bool("validation", false, "Enable OpenAPI validation")
 	packageName := flag.String("package", "mcpgen", "Generated package name")
 	includes := flag.String("includes", "", "Comma-separated list of includes for the generated code")
+	
 
 	// Parse command-line flags
 	flag.Parse()
@@ -59,12 +60,12 @@ func main() {
 		}
 	}
 
-	// Generate the MCP configuration
+	// Generate the MCP server
 	err = generator.GenerateMCP()
 	if err != nil {
-		fmt.Printf("Error generating MCP configuration: %v\n", err)
+		fmt.Printf("Error generating MCP: %v\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("Successfully converted OpenAPI specification to MCP configuration: %s\n", *outputDir)
+	fmt.Printf("Successfully converted OpenAPI specification to MCP: %s\n", *outputDir)
 }
